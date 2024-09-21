@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Query, Body
+from pydantic import Field
+
 from schemas.hotels import Hotel, HotelPUTCH
 
 
@@ -6,7 +8,12 @@ router = APIRouter(prefix="/hotels", tags=['Отели'])
 
 hotels = [
     {"id": 1, "title": "Sochi", "name": "sochi"},
-    {"id": 2, "title": "Dubai", "name": "dubai"}
+    {"id": 2, "title": "Dubai", "name": "dubai"},
+    {"id": 3, "title": "Мальдивы", "name": "maldivi"},
+    {"id": 4, "title": "Геленджик", "name": "gelendzhik"},
+    {"id": 5, "title": "Москва", "name": "moscow"},
+    {"id": 6, "title": "Казань", "name": "kazan"},
+    {"id": 7, "title": "Санкт-Петербург", "name": "spb"},
 ]
 
 
@@ -15,15 +22,17 @@ hotels = [
 def get_hotels(
         id: int | None = Query(None, description="Айдишник"),
         title: str | None = Query(None, description="Название отеля"),
+        page: int | None = Query(1, description="Номер Страницы"),
+        per_page: int | None = Query(3, description="Значений на страницу")
+
 ):
     _hotels = []
-    for hotel in hotels:
+    for hotel in hotels[(page - 1)  * per_page : per_page * page]:
         if id and hotel.get("id") != id:
             continue
         if title and hotel.get("title") != title:
             continue
         _hotels.append(hotel)
-
     return _hotels
 
 
