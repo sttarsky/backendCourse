@@ -5,7 +5,7 @@ from src.api.dependencies import PaginationDep
 from src.schemas.hotels import Hotel, HotelPUTCH
 
 
-router = APIRouter(prefix="/hotels", tags=['Отели'])
+router = APIRouter(prefix="/hotels.py", tags=['Отели'])
 
 hotels = [
     {"id": 1, "title": "Sochi", "name": "sochi"},
