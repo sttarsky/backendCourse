@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     @property
     def DB_URL(self):
-        return create_engine(url=f'posgresql+asyncpg://{self.DB_USER}:{self.DB_PWD}@{self.DB_IP}:{self.DB_PORT}/{self.DB_NAME}')
+        return f'postgresql+asyncpg://{self.DB_USER}:{self.DB_PWD}@{self.DB_IP}:{self.DB_PORT}/{self.DB_NAME}'
+
 
 settings = Settings()
