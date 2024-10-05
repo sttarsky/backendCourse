@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy import create_engine
 
 
 class Settings(BaseSettings):
