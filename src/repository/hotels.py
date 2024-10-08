@@ -1,9 +1,6 @@
 from sqlalchemy import select, func
-from sqlalchemy.dialects.mysql import insert
-
 from src.models.hotels import HotelsOrm
 from src.repository.base import BaseRepository
-from src.schemas.hotels import Hotel
 
 
 class HotelsRepository(BaseRepository):
