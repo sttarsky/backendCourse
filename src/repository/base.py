@@ -1,4 +1,3 @@
-from dns.e164 import query
 from sqlalchemy import select
 
 
@@ -8,7 +7,7 @@ class BaseRepository:
     def __init__(self, session):
         self.session = session
 
-    async def get_all(self):
+    async def get_all(self, *args, **kwargs):
         query = select(self.model)
         result = await self.session.execute(query)
         return result.scalars().all()
