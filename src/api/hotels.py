@@ -1,3 +1,5 @@
+from distutils.util import execute
+
 from fastapi import APIRouter, Query, Body
 from sqlalchemy import insert
 
@@ -51,15 +53,11 @@ async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
 
 
 @router.put("/{hotel_id}")
-def put_hotel(hotel_id: int, hotel_data: Hotel):
-    global hotels
-    update_hotel: list[dict] = [hotel for hotel in hotels if hotel.get("id") == hotel_id]
-    if update_hotel:
-        update_hotel[0]["title"] = hotel_data.title
-        update_hotel[0]["name"] = hotel_data.name
+async def put_hotel(hotel_id: int, hotel_data: Hotel):
+    async with async_session_maker() as session:
+        update_hotel = HotelsRepository.edit(session, hotel_data)
+        session.commit()
         return {"status": "ok"}
-    else:
-        return {"status": "error"}
 
 
 @router.patch("/{hotel_id}", summary='Частичное обновление отелей',
@@ -82,6 +80,7 @@ def patch_hotel(hotel_id: int, hotel_data: HotelPUTCH):
 
 @router.delete("/{hotel_id}")
 def del_hotel(hotel_id: int):
-    global hotels
-    hotels = [hotel for hotel in hotels if hotel.get("id") != hotel_id]
-    return {"status": "ok"}
+    async with async_session_maker() as session:
+        update_hotel = HotelsRepository.delete(session, hotel_id)
+        session.commit()
+        return {"status": "ok"}
