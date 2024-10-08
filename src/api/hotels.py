@@ -1,12 +1,8 @@
-from distutils.util import execute
-
 from fastapi import APIRouter, Query, Body
-from sqlalchemy import insert
 
-from src.databases import async_session_maker, engine
+from src.databases import async_session_maker
 from src.api.dependencies import PaginationDep
-from src.models.hotels import HotelsOrm
-from src.schemas.hotels import Hotel, HotelPUTCH
+from src.schemas.hotels import Hotel, HotelPATCH
 from src.repository.hotels import HotelsRepository
 
 router = APIRouter(prefix="/hotels", tags=['Отели'])
@@ -62,20 +58,11 @@ async def put_hotel(hotel_id: int, hotel_data: Hotel):
 
 @router.patch("/{hotel_id}", summary='Частичное обновление отелей',
               description="<h1>Тут мы частично обновляем данные об отеле: можно отправить name, а можно title</h1>")
-def patch_hotel(hotel_id: int, hotel_data: HotelPUTCH):
-    if hotel_data.title and hotel_data.name:
-        return put_hotel(hotel_id, hotel_data.title, hotel_data.name)
-    else:
-        global hotels
-        for hotel in hotels:
-            if hotel.get("id") == hotel_id:
-                if hotel_data.title:
-                    hotel["title"] = hotel_data.title
-                if hotel_data.name:
-                    hotel["name"] = hotel_data.name
-                return {"status": "ok"}
-            else:
-                return {"status": "error"}
+async def patch_hotel(hotel_id: int, hotel_data: HotelPATCH):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).edit(hotel_data, exclude_unset=True, id=hotel_id)
+        await session.commit()
+        return {"status": "ok"}
 
 
 @router.delete("/{hotel_id}")
