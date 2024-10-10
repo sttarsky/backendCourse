@@ -9,6 +9,8 @@ from src.config import settings
 from src.databases import Base
 from src.models.hotels import HotelsOrm # noqa
 from src.models.rooms import RoomsOrm # noqa
+from src.models.users import UsersORM # noqa
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
