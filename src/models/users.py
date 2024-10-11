@@ -9,5 +9,5 @@ class UsersORM(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     surname: Mapped[str] = mapped_column(String(20))
     nickname: Mapped[str] = mapped_column(String(50))
-    email: Mapped[str] = mapped_column(String(200))
+    email: Mapped[str] = mapped_column(String(200), unique=True)
     hashed_password: Mapped[str] = mapped_column(String(200))
