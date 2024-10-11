@@ -16,7 +16,13 @@ async def registr(data: UserRequestADD):
     new_user_data = UserADD(email=data.email,
                             surname=data.surname,
                             nickname=data.nickname,
-                            hash_password=hashed_pass)
+                            hashed_password=hashed_pass)
     async with async_session_maker() as session:
-        await UsersRepository(session).add(new_user_data)
-        await session.commit()
+        check = await UsersRepository(session).get_one_or_none(email=data.email)
+        if not check:
+            await UsersRepository(session).add(new_user_data)
+            await session.commit()
+            return {'status': 'ok'}
+        else:
+            await session.rollback()
+            return {'status': 'user exist'}

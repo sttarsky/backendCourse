@@ -10,7 +10,7 @@ class UserRequestADD(BaseModel):
 
 class UserADD(BaseModel):
     email: EmailStr
-    hash_password: str
+    hashed_password: str
     nickname: str
     surname: str
 
