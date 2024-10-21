@@ -35,3 +35,10 @@ async def registr(data: UserRequestADD):
         await UsersRepository(session).add(new_user_data)
         await session.commit()
         return {'status': 'ok'}
+
+
+@router.get("/only_auth")
+async def only_auth(
+        request: Request,
+):
+    access_token = request.cookies.get('access_token') or None
