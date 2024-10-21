@@ -22,5 +22,9 @@ class User(BaseModel):
     id: int
     email: EmailStr
     nickname: str
-
+    surname: str
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserWithHashedPass(User):
+    hashed_password: str

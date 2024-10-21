@@ -1,43 +1,32 @@
-from datetime import timezone, datetime, timedelta
 from os import access
 
-from fastapi import APIRouter, HTTPException
-from passlib.context import CryptContext
-import jwt
+from fastapi import APIRouter, HTTPException, Response, Request
 
 from src.databases import async_session_maker
 from src.repository.users import UsersRepository
 from src.schemas.users import UserRequestADD, UserADD, UserRequest
+from src.services.auth import AuthServices
 
 router = APIRouter(prefix='/auth', tags=['Авторизация и аутентификация'])
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-
-def create_access_token(data: dict):
-    to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
 
 @router.post("/login")
-async def login_user(data: UserRequest):
+async def login_user(data: UserRequest,
+                     response: Response):
     async with async_session_maker() as session:
-        user = await UsersRepository(session).get_one_or_none(email=data.email)
+        user = await UsersRepository(session).get_user_with_hashed_pass(email=data.email)
         if not user:
             raise HTTPException(status_code=401, detail='No such user')
-        access_token = create_access_token({'id': user.id})
+        if not AuthServices().verify_password(data.password, user.hashed_password):
+            raise HTTPException(status_code=401, detail='Incorrect password')
+        access_token = AuthServices().create_access_token({'id': user.id})
+        response.set_cookie(key='access_token', value=access_token)
         return {'access_token': access_token}
 
 
 @router.post("/registration")
 async def registr(data: UserRequestADD):
-    hashed_pass = pwd_context.hash(data.password)
+    hashed_pass = AuthServices().hash_password(data.password)
     new_user_data = UserADD(email=data.email,
                             surname=data.surname,
                             nickname=data.nickname,
