@@ -41,4 +41,8 @@ async def registr(data: UserRequestADD):
 async def only_auth(
         request: Request,
 ):
-    access_token = request.cookies.get('access_token') or None
+    access_token = AuthServices.decode_token(request.cookies.get('access_token'))
+    user_id = access_token.get('id')
+    async with async_session_maker() as session:
+        result = await UsersRepository(session).get_one_or_none(id=user_id)
+        return result
