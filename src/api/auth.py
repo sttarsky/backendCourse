@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException, Response, Request
 
 from src.api.dependencies import UserIdDep
@@ -41,7 +40,15 @@ async def registr(data: UserRequestADD):
 async def get_me(
         user_id: UserIdDep
 ):
-
     async with async_session_maker() as session:
         result = await UsersRepository(session).get_one_or_none(id=user_id)
         return result
+
+
+@router.get('/logout')
+async def get_logout(
+        response: Response
+):
+    print(response)
+    response.delete_cookie(key='access_token')
+    return {"detail": "Successfully logged out"}
