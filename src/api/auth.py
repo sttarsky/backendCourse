@@ -1,7 +1,7 @@
-from os import access
 
 from fastapi import APIRouter, HTTPException, Response, Request
 
+from src.api.dependencies import UserIdDep
 from src.databases import async_session_maker
 from src.repository.users import UsersRepository
 from src.schemas.users import UserRequestADD, UserADD, UserRequest
@@ -37,12 +37,11 @@ async def registr(data: UserRequestADD):
         return {'status': 'ok'}
 
 
-@router.get("/only_auth")
-async def only_auth(
-        request: Request,
+@router.get("/me")
+async def get_me(
+        user_id: UserIdDep
 ):
-    access_token = AuthServices.decode_token(request.cookies.get('access_token'))
-    user_id = access_token.get('id')
+
     async with async_session_maker() as session:
         result = await UsersRepository(session).get_one_or_none(id=user_id)
         return result
