@@ -1,7 +1,6 @@
 from datetime import date
 
 from sqlalchemy import select, func
-from watchfiles import awatch
 
 from src.models.hotels import HotelsOrm
 from src.models.rooms import RoomsOrm
@@ -30,11 +29,20 @@ class HotelsRepository(BaseRepository):
 
     async def get_filtered_by_time(self,
                                    date_from: date,
-                                   date_to: date
+                                   date_to: date,
+                                   limit: int,
+                                   offset: int
                                    ):
         rooms_to_get = get_rooms(date_to=date_to, date_from=date_from)
         hotels_to_get = (select(RoomsOrm.hotel_id)
                          .select_from(RoomsOrm)
                          .filter(RoomsOrm.id.in_(rooms_to_get))
                          )
-        return await self.get_filtered(self.model.id.in_(hotels_to_get))
+        query = (
+            select(self.model)
+            .filter(self.model.id.in_(hotels_to_get))
+            .limit(limit)
+            .offset(offset)
+        )
+        result = await self.session.execute(query)
+        return [self.schema.model_validate(item) for item in result.scalars().all()]
