@@ -2,6 +2,7 @@ from datetime import date
 
 from fastapi import APIRouter, HTTPException, Body, Query
 from src.api.dependencies import DBDep
+from src.schemas.facilities import RoomFacilityADD
 from src.schemas.rooms import RoomADD, RoomPATCH, RoomADDRequest, RoomPATCHRequest
 
 router = APIRouter(prefix='/hotels', tags=['Номера'])
@@ -28,9 +29,18 @@ async def get_one_room(hotel_id: int, db: DBDep, room_id: int):
 
 
 @router.post("/{hotel_id}/rooms")
-async def create_room(hotel_id: int, db: DBDep, room_data: RoomADDRequest = Body()):
+async def create_room(hotel_id: int, db: DBDep, room_data: RoomADDRequest = Body(example={
+  "title": "string",
+  "description": "string",
+  "price": 0,
+  "quantity": 0,
+  "facilities": []
+})):
     _room_data = RoomADD(hotel_id=hotel_id, **room_data.model_dump())
     room = await db.rooms.add(_room_data)
+    if room_data.facilities:
+        rooms_facilities_data = [RoomFacilityADD(room_id=room.id, facility_id=item) for item in room_data.facilities]
+        await db.rooms_facilities.add_bulk(rooms_facilities_data)
     await db.commit()
     return {"status": "OK", "data": room}
 

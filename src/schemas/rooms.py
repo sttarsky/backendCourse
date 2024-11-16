@@ -8,6 +8,7 @@ class RoomADDRequest(BaseModel):
     description: str | None = Field(None)
     price: int
     quantity: int
+    facilities: list[int] | None = None
 
 
 class RoomADD(BaseModel):
