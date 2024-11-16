@@ -1,9 +1,7 @@
-from datetime import date
 
-from fastapi import APIRouter, Query, Body
-from src.api.dependencies import PaginationDep, DBDep
-from src.schemas.facilities import FacilitiesADD
-from src.schemas.hotels import HotelADD, HotelPATCH
+from fastapi import APIRouter, Body
+from src.api.dependencies import DBDep
+from src.schemas.facilities import FacilityADD
 
 router = APIRouter(prefix="/facilities", tags=['Удобства'])
 
@@ -14,7 +12,7 @@ async def get_facilities(db: DBDep):
 
 
 @router.post("")
-async def post_facilities(db: DBDep, title: FacilitiesADD):
+async def post_facilities(db: DBDep, title: FacilityADD = Body()):
     facility = await db.facilities.add(title)
     await db.commit()
     return {"status": "ok", "facility": facility}
