@@ -1,7 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.schemas.hotels import Hotel
-
 
 class RoomADDRequest(BaseModel):
     title: str
@@ -30,6 +28,7 @@ class RoomPATCHRequest(BaseModel):
     description: str | None = Field(None)
     price: int | None = Field(None)
     quantity: int | None = Field(None)
+    facilities_ids: list[int] | None = Field(None)
 
 
 class RoomPATCH(BaseModel):
