@@ -27,8 +27,11 @@ class RoomsFacilitiesRepository(BaseRepository):
             add_stmt = insert(RoomsFacilitiesORM).values(add_data)
             await self.session.execute(add_stmt)
         if rem_facilities:
-            rem_stmt = delete(RoomsFacilitiesORM).where(
-                RoomsFacilitiesORM.room_id == room_id,
-                RoomsFacilitiesORM.facility_id.in_(rem_facilities)
+            rem_stmt = (
+                delete(RoomsFacilitiesORM)
+                .filter(
+                    RoomsFacilitiesORM.room_id == room_id,
+                    RoomsFacilitiesORM.facility_id.in_(rem_facilities)
+                )
             )
             await self.session.execute(rem_stmt)
