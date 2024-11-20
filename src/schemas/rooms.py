@@ -21,7 +21,6 @@ class RoomADD(BaseModel):
 
 class Rooms(RoomADD):
     id: int
-    model_config = ConfigDict(from_attributes=True)
 
 
 class RoomWithRels(Rooms):
