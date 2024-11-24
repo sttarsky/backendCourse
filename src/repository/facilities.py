@@ -1,10 +1,8 @@
-from os.path import exists
-
 from sqlalchemy import select, insert, delete
 
 from src.models.facilities import FacilitiesORM, RoomsFacilitiesORM
 from src.repository.base import BaseRepository
-from src.repository.mappers.mappers import FacilityMapper
+from src.repository.mappers.mappers import FacilityMapper, RoomFacilityDataMapper
 from src.schemas.facilities import RoomFacility
 
 
@@ -16,6 +14,7 @@ class FacilitiesRepository(BaseRepository):
 class RoomsFacilitiesRepository(BaseRepository):
     model = RoomsFacilitiesORM
     schema = RoomFacility
+    mapper = RoomFacilityDataMapper
 
     async def set_room_facilities(self, room_id: int, facilities_ids: list[int]):
         query = select(RoomsFacilitiesORM).filter_by(room_id=room_id)
