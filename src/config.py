@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PWD: str
 
+    REDIS_HOST: str
+    REDIS_PORT: int
+
     model_config = SettingsConfigDict(env_file='.env')
 
     JWT_SECRET_KEY: str
