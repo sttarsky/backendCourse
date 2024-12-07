@@ -1,5 +1,5 @@
 from src.models.bookings import BookingsORM
-from src.models.facilities import FacilitiesORM
+from src.models.facilities import FacilitiesORM, RoomsFacilitiesORM
 from src.models.hotels import HotelsOrm
 from src.models.rooms import RoomsOrm
 from src.models.users import UsersORM
@@ -41,10 +41,6 @@ class UserMapper(DataMapper):
     schema = User
 
 
-class RoomsFacilitiesOrm:
-    pass
-
-
 class RoomFacilityDataMapper(DataMapper):
-    db_model = RoomsFacilitiesOrm
+    db_model = RoomsFacilitiesORM
     schema = RoomFacility
