@@ -3,6 +3,8 @@ from fastapi_cache.decorator import cache
 
 from src.api.dependencies import DBDep
 from src.schemas.facilities import FacilityADD
+from src.tasks.celery_app import celery_instance
+from src.tasks.tasks import test_task
 
 router = APIRouter(prefix="/facilities", tags=['Удобства'])
 
@@ -17,5 +19,6 @@ async def get_facilities(db: DBDep):
 @router.post("")
 async def post_facilities(db: DBDep, title: FacilityADD = Body()):
     facility = await db.facilities.add(title)
+    test_task.delay()
     await db.commit()
     return {"status": "ok", "facility": facility}
