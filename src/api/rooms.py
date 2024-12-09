@@ -29,13 +29,13 @@ async def get_one_room(hotel_id: int, db: DBDep, room_id: int):
 
 
 @router.post("/{hotel_id}/rooms")
-async def create_room(hotel_id: int, db: DBDep, room_data: RoomADDRequest = Body(example={
+async def create_room(hotel_id: int, db: DBDep, room_data: RoomADDRequest = Body(examples=[{
   "title": "string",
   "description": "string",
-  "price": 0,
+  "price": 1,
   "quantity": 0,
   "facilities": []
-})):
+}])):
     _room_data = RoomADD(hotel_id=hotel_id, **room_data.model_dump())
     room = await db.rooms.add(_room_data)
     if room_data.facilities:
