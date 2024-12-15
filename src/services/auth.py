@@ -11,7 +11,7 @@ class AuthServices:
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     @classmethod
-    def create_access_token(cls, data: dict):
+    def create_access_token(cls, data: dict) -> str:
         to_encode = data.copy()
         expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         to_encode.update({"exp": expire})
