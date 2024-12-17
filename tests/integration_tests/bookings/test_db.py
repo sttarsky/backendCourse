@@ -16,10 +16,14 @@ async def test_booking_crud(db):
         date_to=date.today() + timedelta(days=1),
         price=randint(100, 2000)
     )
-    assert await db.bookings.add(booking)
+    new_booking = await db.bookings.add(booking)
+    booking = await db.bookings.get_one_or_none(id=new_booking.id)
+    assert booking
+    assert booking.user_id == new_booking.user_id
+    assert booking.room_id == new_booking.room_id
     booking.date_to = date.today() + timedelta(days=randint(15, 25))
-    await db.bookings.edit(data=booking, exclude_unset=True)
-    print(f"booking={booking.model_dump()}")
+
+    await db.bookings.edit(data=booking)
     assert await db.bookings.get_one_or_none(**booking.model_dump())
     await db.bookings.delete(**booking.model_dump())
     assert (await db.bookings.get_one_or_none(**booking.model_dump())) is None
