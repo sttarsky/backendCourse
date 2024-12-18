@@ -34,7 +34,7 @@ app.dependency_overrides[get_db] = get_db_null_pool
 
 @pytest.fixture(scope="session")
 async def ac() -> AsyncClient:
-    async with app.router.lifespan_context(app):
+    # async with app.router.lifespan_context(app):
         async with AsyncClient(app=app, base_url="http://test") as ac:
             yield ac
 
