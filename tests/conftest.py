@@ -1,4 +1,7 @@
 import json
+from unittest import mock
+
+mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
 from httpx import AsyncClient
 import pytest
@@ -34,9 +37,8 @@ app.dependency_overrides[get_db] = get_db_null_pool
 
 @pytest.fixture(scope="session")
 async def ac() -> AsyncClient:
-    # async with app.router.lifespan_context(app):
-        async with AsyncClient(app=app, base_url="http://test") as ac:
-            yield ac
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        yield ac
 
 
 @pytest.fixture(scope="session", autouse=True)
