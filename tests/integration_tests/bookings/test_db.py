@@ -22,8 +22,8 @@ async def test_booking_crud(db):
     assert booking.user_id == new_booking.user_id
     assert booking.room_id == new_booking.room_id
     booking.date_to = date.today() + timedelta(days=randint(15, 25))
-
-    await db.bookings.edit(data=booking)
+    #
+    await db.bookings.edit(id=booking.id, data=booking)
     assert await db.bookings.get_one_or_none(**booking.model_dump())
     await db.bookings.delete(**booking.model_dump())
     assert (await db.bookings.get_one_or_none(**booking.model_dump())) is None
