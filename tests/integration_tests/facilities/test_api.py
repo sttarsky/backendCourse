@@ -9,7 +9,6 @@ async def test_post_facilities(ac):
     response = await ac.post("/facilities", json={"title": facility_title})
     assert response.status_code == 200
     res = response.json()
-    print(f"{res=}")
     assert isinstance(res, dict)
     assert res["facility"]["title"] == facility_title
     assert "facility" in res
