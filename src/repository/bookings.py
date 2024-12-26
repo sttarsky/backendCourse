@@ -3,7 +3,7 @@ from datetime import date
 from sqlalchemy import select
 
 
-from src.models import RoomsOrm
+from src.models import RoomsOrm, HotelsOrm
 from src.models.bookings import BookingsORM
 from src.repository.base import BaseRepository
 from src.repository.mappers.mappers import BookingMapper
@@ -23,8 +23,8 @@ class BookingsRepository(BaseRepository):
         result = await self.session.execute(query)
         return [self.mapper.map_to_domain_entity(booking) for booking in result.scalars().all()]
 
-    async def add_booking(self, data: BookingADD):
-        rooms_to_get = get_rooms(date_to=data.date_to, date_from=data.date_from)
+    async def add_booking(self, data: BookingADD, hotel_id: int):
+        rooms_to_get = get_rooms(date_to=data.date_to, date_from=data.date_from, hotel_id=hotel_id)
         check_available = (select(RoomsOrm.id)
                            .select_from(RoomsOrm)
                            .filter(RoomsOrm.id == data.room_id)
@@ -34,4 +34,4 @@ class BookingsRepository(BaseRepository):
         valid_room = result.scalars().one_or_none()
         if not valid_room:
             raise ValueError("The room is not available for the selected dates.")
-        return await self.session.add(data)
+        return await self.add(data)
