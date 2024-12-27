@@ -1,9 +1,10 @@
 from datetime import date
 
+from fastapi import HTTPException
 from sqlalchemy import select
 
 
-from src.models import RoomsOrm, HotelsOrm
+from src.models import RoomsOrm
 from src.models.bookings import BookingsORM
 from src.repository.base import BaseRepository
 from src.repository.mappers.mappers import BookingMapper
@@ -33,5 +34,5 @@ class BookingsRepository(BaseRepository):
         result = await self.session.execute(check_available)
         valid_room = result.scalars().one_or_none()
         if not valid_room:
-            raise ValueError("The room is not available for the selected dates.")
+            raise HTTPException(500)
         return await self.add(data)
