@@ -23,14 +23,17 @@ async def login_user(data: UserRequest,
 
 @router.post("/registration")
 async def registr(data: UserRequestADD, db: DBDep):
-    hashed_pass = AuthServices().hash_password(data.password)
-    new_user_data = UserADD(email=data.email,
-                            surname=data.surname,
-                            nickname=data.nickname,
-                            hashed_password=hashed_pass)
-    await db.users.add(new_user_data)
-    await db.commit()
-    return {'status': 'ok'}
+    try:
+        hashed_pass = AuthServices().hash_password(data.password)
+        new_user_data = UserADD(email=data.email,
+                                surname=data.surname,
+                                nickname=data.nickname,
+                                hashed_password=hashed_pass)
+        await db.users.add(new_user_data)
+        await db.commit()
+        return {'status': 'ok'}
+    except:
+        raise HTTPException(400)
 
 
 @router.get("/me")
