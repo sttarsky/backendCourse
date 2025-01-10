@@ -32,7 +32,7 @@ async def registr(data: UserRequestADD, db: DBDep):
         await db.users.add(new_user_data)
         await db.commit()
         return {'status': 'ok'}
-    except:
+    except: # noqa : E722
         raise HTTPException(400)
 
 
