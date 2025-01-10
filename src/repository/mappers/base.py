@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 from src.databases import Base
 
-SchemaType = TypeVar('SchemaType', bound=BaseModel)
-ModelType = TypeVar('ModelType', bound=Base)
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
+ModelType = TypeVar("ModelType", bound=Base)
 
 
 class DataMapper:

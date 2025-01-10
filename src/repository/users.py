@@ -18,5 +18,3 @@ class UsersRepository(BaseRepository):
         if not model:
             return None
         return UserWithHashedPass.model_validate(model)
-
-

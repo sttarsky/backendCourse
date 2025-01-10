@@ -17,20 +17,23 @@ class BookingsRepository(BaseRepository):
     mapper = BookingMapper
 
     async def get_bookings_checkin(self):
-        query = (
-            select(self.model)
-            .filter(self.model.date_from == date.today())
-        )
+        query = select(self.model).filter(self.model.date_from == date.today())
         result = await self.session.execute(query)
-        return [self.mapper.map_to_domain_entity(booking) for booking in result.scalars().all()]
+        return [
+            self.mapper.map_to_domain_entity(booking)
+            for booking in result.scalars().all()
+        ]
 
     async def add_booking(self, data: BookingADD, hotel_id: int):
-        rooms_to_get = get_rooms(date_to=data.date_to, date_from=data.date_from, hotel_id=hotel_id)
-        check_available = (select(RoomsOrm.id)
-                           .select_from(RoomsOrm)
-                           .filter(RoomsOrm.id == data.room_id)
-                           .filter(RoomsOrm.id.in_(rooms_to_get))
-                           )
+        rooms_to_get = get_rooms(
+            date_to=data.date_to, date_from=data.date_from, hotel_id=hotel_id
+        )
+        check_available = (
+            select(RoomsOrm.id)
+            .select_from(RoomsOrm)
+            .filter(RoomsOrm.id == data.room_id)
+            .filter(RoomsOrm.id.in_(rooms_to_get))
+        )
         result = await self.session.execute(check_available)
         valid_room = result.scalars().one_or_none()
         if not valid_room:

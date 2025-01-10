@@ -1,17 +1,18 @@
 """init migration
 
 Revision ID: 574e3d20ee3c
-Revises: 
+Revises:
 Create Date: 2024-10-01 21:53:22.738407
 
 """
+
 from typing import Sequence, Union
 
-from alembic import op # noqa
+from alembic import op  # noqa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '574e3d20ee3c'
+revision: str = "574e3d20ee3c"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

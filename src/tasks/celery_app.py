@@ -3,14 +3,9 @@ from celery import Celery
 from src.config import settings
 
 celery_instance = Celery(
-    'tasks',
-    broker=settings.REDIS_URL,
-    include=['src.tasks.tasks']
+    "tasks", broker=settings.REDIS_URL, include=["src.tasks.tasks"]
 )
 
 celery_instance.conf.beat_schedule = {
-    "email_notify": {
-        "task": "booking_today_checkin",
-        "schedule": 10
-    }
+    "email_notify": {"task": "booking_today_checkin", "schedule": 10}
 }

@@ -19,7 +19,9 @@ async def post_booking(user_id: UserIdDep, booking_data: BookingADDRequest, db: 
     if not room:
         raise HTTPException(status_code=404, detail="No such room")
     room_price: int = room.price
-    _booking_data = BookingADD(user_id=user_id, price=room_price, **booking_data.model_dump())
+    _booking_data = BookingADD(
+        user_id=user_id, price=room_price, **booking_data.model_dump()
+    )
     booking = await db.bookings.add_booking(_booking_data, hotel_id=hotel.id)
     await db.commit()
     return {"status": "ok", "booking": booking}

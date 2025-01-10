@@ -5,7 +5,7 @@ from src.api.dependencies import DBDep
 from src.schemas.facilities import FacilityADD
 from src.tasks.tasks import test_task
 
-router = APIRouter(prefix="/facilities", tags=['Удобства'])
+router = APIRouter(prefix="/facilities", tags=["Удобства"])
 
 
 @router.get("")

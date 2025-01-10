@@ -23,15 +23,15 @@ class RoomsFacilitiesRepository(BaseRepository):
         add_facilities = list(set(facilities_ids) - set(exist_facilities))
         rem_facilities = list(set(exist_facilities) - set(facilities_ids))
         if add_facilities:
-            add_data = [{"room_id": room_id, "facility_id": facility_id} for facility_id in add_facilities]
+            add_data = [
+                {"room_id": room_id, "facility_id": facility_id}
+                for facility_id in add_facilities
+            ]
             add_stmt = insert(RoomsFacilitiesORM).values(add_data)
             await self.session.execute(add_stmt)
         if rem_facilities:
-            rem_stmt = (
-                delete(RoomsFacilitiesORM)
-                .filter(
-                    RoomsFacilitiesORM.room_id == room_id,
-                    RoomsFacilitiesORM.facility_id.in_(rem_facilities)
-                )
+            rem_stmt = delete(RoomsFacilitiesORM).filter(
+                RoomsFacilitiesORM.room_id == room_id,
+                RoomsFacilitiesORM.facility_id.in_(rem_facilities),
             )
             await self.session.execute(rem_stmt)
