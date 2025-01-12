@@ -6,4 +6,8 @@ class ProjectBaseException(Exception):
 
 
 class ObjectNotFoundException(ProjectBaseException):
-    detail = "Объект не найден"
+    detail = "Object not found"
+
+
+class AllRoomsAreBookedException(ProjectBaseException):
+    detail = "No free rooms"

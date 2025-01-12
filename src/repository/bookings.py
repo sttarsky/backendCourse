@@ -2,8 +2,9 @@ from datetime import date
 
 from fastapi import HTTPException
 from sqlalchemy import select
+from sqlalchemy.exc import NoResultFound
 
-
+from src.exceptions import AllRoomsAreBookedException
 from src.models import RoomsOrm
 from src.models.bookings import BookingsORM
 from src.repository.base import BaseRepository
@@ -35,7 +36,8 @@ class BookingsRepository(BaseRepository):
             .filter(RoomsOrm.id.in_(rooms_to_get))
         )
         result = await self.session.execute(check_available)
-        valid_room = result.scalars().one_or_none()
-        if not valid_room:
-            raise HTTPException(500)
+        try:
+            result.scalar_one()
+        except NoResultFound:
+            raise AllRoomsAreBookedException
         return await self.add(data)
