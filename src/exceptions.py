@@ -11,3 +11,7 @@ class ObjectNotFoundException(ProjectBaseException):
 
 class AllRoomsAreBookedException(ProjectBaseException):
     detail = "No free rooms"
+
+
+class UserNotExist(ProjectBaseException):
+    detail = "No such user"
