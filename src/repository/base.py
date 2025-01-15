@@ -1,8 +1,9 @@
+from asyncpg import UniqueViolationError
 from pydantic import BaseModel
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.exc import NoResultFound, IntegrityError
 
-from src.exceptions import ObjectNotFoundException
+from src.exceptions import ObjectNotFoundException, ObjectAlreadyExistException
 from src.repository.mappers.base import DataMapper
 
 
@@ -44,14 +45,15 @@ class BaseRepository:
         add_data_stmt = (
             insert(self.model).values(**data.model_dump()).returning(self.model)
         )
-        result = await self.session.execute(add_data_stmt)
         try:
-            model = result.scalars().one_or_none()
-            if model is None:
-                return None
+            result = await self.session.execute(add_data_stmt)
+            model = result.scalars().one()
             return self.mapper.map_to_domain_entity(model)
-        except IntegrityError:
-            raise IntegrityError
+        except IntegrityError as ex:
+            if isinstance(ex.orig.__cause__, UniqueViolationError):
+                raise ObjectAlreadyExistException from ex
+            else:
+                raise ex
 
     async def add_bulk(self, data: list[BaseModel]):
         add_data_stmt = insert(self.model).values([item.model_dump() for item in data])

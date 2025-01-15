@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException, Response
-from sqlalchemy.exc import IntegrityError
-
 from src.api.dependencies import UserIdDep, DBDep
-from src.exceptions import UserNotExist
+from src.exceptions import ObjectAlreadyExistException
 from src.schemas.users import UserRequestADD, UserADD, UserRequest
 from src.services.auth import AuthServices
 
@@ -13,8 +11,8 @@ router = APIRouter(prefix="/auth", tags=["Авторизация и аутент
 async def login_user(data: UserRequest, response: Response, db: DBDep):
     try:
         user = await db.users.get_user_with_hashed_pass(email=data.email)
-    except UserNotExist as ex:
-        raise HTTPException(status_code=401, detail=ex.detail)
+    except:
+        raise HTTPException(status_code=401, detail="No such user")
     if not AuthServices().verify_password(data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect password")
     access_token = AuthServices().create_access_token({"id": user.id})
@@ -35,7 +33,7 @@ async def registr(data: UserRequestADD, db: DBDep):
         await db.users.add(new_user_data)
         await db.commit()
         return {"status": "ok"}
-    except IntegrityError:
+    except ObjectAlreadyExistException:
         raise HTTPException(409, detail="User already exist")
 
 
