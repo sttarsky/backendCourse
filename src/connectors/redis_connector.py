@@ -1,4 +1,5 @@
 import redis.asyncio as redis
+import logging
 
 
 class RedisManager:
@@ -9,6 +10,7 @@ class RedisManager:
 
     async def connect(self):
         self.redis = await redis.Redis(host=self.host, port=self.port)
+        logging.info("Redis connected")
 
     async def get(self, key: str):
         return await self.redis.get(key)
