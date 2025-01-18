@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.parametrize("email, password, nickname, surname, status_code", [
     ("test@test.ru", "123456", "Test", "Test2", 200),
-    ("test@test.ru", "123456", "Test", "Test2", 400)
+    ("test@test.ru", "123456", "Test", "Test2", 409)
 ])
 async def test_full_auth(email, password, nickname, surname, status_code, ac):
     result_registration = await ac.post("/auth/registration",

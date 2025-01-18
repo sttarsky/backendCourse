@@ -9,7 +9,7 @@ from tests.conftest import get_db_null_pool
                           (1, '2025-01-26', '2025-01-27', 200),
                           (1, '2025-01-26', '2025-01-27', 200),
                           (1, '2025-01-26', '2025-01-27', 200),
-                          (1, '2025-01-26', '2025-01-27', 500)])
+                          (1, '2025-01-26', '2025-01-27', 409)])
 async def test_add_booking(db, authenticated_ac, room_id, date_from, date_to, status_code):
     result = await authenticated_ac.post("/bookings",
                                          json={
