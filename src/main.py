@@ -17,7 +17,7 @@ from src.api.bookings import router as booking_router
 from src.api.facilities import router as facility_router
 from src.api.images import router as images_router
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 @asynccontextmanager

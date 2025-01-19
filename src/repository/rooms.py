@@ -7,7 +7,11 @@ from sqlalchemy.orm import selectinload
 from src.exceptions import RoomNotFoundException
 from src.models.rooms import RoomsOrm
 from src.repository.base import BaseRepository
-from src.repository.mappers.mappers import RoomMapper, RoomWithRelsMapper, RoomFacilityDataMapper
+from src.repository.mappers.mappers import (
+    RoomMapper,
+    RoomWithRelsMapper,
+    RoomFacilityDataMapper,
+)
 from src.repository.utils import get_rooms
 
 
