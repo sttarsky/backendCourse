@@ -14,7 +14,7 @@ async def test_booking_crud(db):
         room_id=room,
         date_from=date.today(),
         date_to=date.today() + timedelta(days=1),
-        price=randint(100, 2000)
+        price=randint(100, 2000),
     )
     new_booking = await db.bookings.add(booking)
     booking = await db.bookings.get_one_or_none(id=new_booking.id)

@@ -12,6 +12,14 @@ class ObjectNotFoundException(ProjectBaseException):
     detail = "Object not found"
 
 
+class RoomNotFoundException(ObjectNotFoundException):
+    detail = "Room not found"
+
+
+class HotelNotFoundException(ObjectNotFoundException):
+    detail = "Hotel not found"
+
+
 class ObjectAlreadyExistException(ProjectBaseException):
     detail = "Object already exists"
 

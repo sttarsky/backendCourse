@@ -8,7 +8,6 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
-
 @app.get("/sync/{id}")
 def sync_func(id: int):
     print(f"sync. Потоков: {threading.active_count()}")

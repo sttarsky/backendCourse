@@ -53,9 +53,9 @@ async def setup_database(check_db):
 async def create_hotels_rooms(setup_database):
     mock_hotels = "tests/mock_hotels.json"
     mock_rooms = "tests/mock_rooms.json"
-    with open(mock_hotels, 'r') as file:
+    with open(mock_hotels, "r") as file:
         hotels_to_incert = json.load(file)
-    with open(mock_rooms, 'r') as file:
+    with open(mock_rooms, "r") as file:
         rooms_to_incert = json.load(file)
     hotels = [HotelADD.model_validate(hotel) for hotel in hotels_to_incert]
     rooms = [RoomADD.model_validate(room) for room in rooms_to_incert]
@@ -73,20 +73,13 @@ async def register_user(ac, setup_database):
             "email": "kot@pes.com",
             "password": "1234",
             "nickname": "Kot",
-            "surname": "Kotov"
-
-        }
+            "surname": "Kotov",
+        },
     )
 
 
 @pytest.fixture(scope="session")
 async def authenticated_ac(ac, register_user):
-    await ac.post(
-        "/auth/login",
-        json={
-            "email": "kot@pes.com",
-            "password": "1234"
-        }
-    )
+    await ac.post("/auth/login", json={"email": "kot@pes.com", "password": "1234"})
     assert ac.cookies["access_token"]
     yield ac

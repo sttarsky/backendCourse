@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.exc import NoResultFound, IntegrityError
 
-from src.exceptions import ObjectNotFoundException, ObjectAlreadyExistException
+from src.exceptions import ObjectAlreadyExistException, ObjectNotFoundException
 from src.repository.mappers.base import DataMapper
 
 
@@ -39,9 +39,9 @@ class BaseRepository:
         result = await self.session.execute(query)
         try:
             model = result.scalar_one()
+            return self.mapper.map_to_domain_entity(model)
         except NoResultFound:
             raise ObjectNotFoundException
-        return self.mapper.map_to_domain_entity(model)
 
     async def add(self, data: BaseModel):
         add_data_stmt = (
@@ -52,9 +52,7 @@ class BaseRepository:
             model = result.scalars().one()
             return self.mapper.map_to_domain_entity(model)
         except IntegrityError as ex:
-            logging.exception(
-                f"Не удалось добавить данные в БД, входные данные={data}"
-            )
+            logging.exception(f"Не удалось добавить данные в БД, входные данные={data}")
             if isinstance(ex.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistException from ex
             else:
@@ -68,7 +66,7 @@ class BaseRepository:
         await self.session.execute(add_data_stmt)
 
     async def edit(
-            self, data: BaseModel, exclude_unset: bool = False, **filter_by
+        self, data: BaseModel, exclude_unset: bool = False, **filter_by
     ) -> None:
         update_stmt = (
             update(self.model)
