@@ -9,5 +9,5 @@ class ImageService(BaseService):
         image_path = f"src/static/images/{file.filename}"
         with open(image_path, "wb+") as new_file:
             shutil.copyfileobj(fsrc=file.file, fdst=new_file)
-        background_tasks.add_task(resize_image, image_path)
-        # resize_image.delay(image_path)
+        # background_tasks.add_task(resize_image, image_path)
+        resize_image.delay(image_path)
